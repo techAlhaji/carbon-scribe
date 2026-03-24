@@ -961,3 +961,20 @@ model CsrdReport {
   @@index([reportingYear])
   @@map("csrd_reports")
 }
+
+model CreditTransfer {
+  id              String   @id @default(cuid())
+  purchaseId      String   @unique
+  companyId       String
+  projectId       String
+  amount          Int
+  transactionHash String?
+  status          String   // PENDING, CONFIRMED, FAILED
+  errorMessage    String?
+  initiatedAt     DateTime @default(now())
+  confirmedAt     DateTime?
+
+  @@index([purchaseId])
+  @@index([companyId])
+  @@index([status])
+}

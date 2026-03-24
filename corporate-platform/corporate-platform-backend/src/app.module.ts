@@ -58,8 +58,6 @@ import { TenantMiddleware } from './multi-tenant/middleware/tenant.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RequestLoggerMiddleware, TenantMiddleware)
-      .forRoutes('*');
+    consumer.apply(RequestLoggerMiddleware, TenantMiddleware).forRoutes('*');
   }
 }
