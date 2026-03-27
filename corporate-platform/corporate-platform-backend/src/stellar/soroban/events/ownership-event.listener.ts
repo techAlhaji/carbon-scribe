@@ -3,7 +3,6 @@ import { ConfigService } from '../../../config/config.service';
 import { OwnershipHistoryService } from '../../../audit/ownership-history/ownership-history.service';
 import { EventProcessorService } from '../../../audit/ownership-history/event-processor.service';
 import { SorobanService } from '../../soroban.service';
-import { OwnershipEventType } from '../../../audit/ownership-history/interfaces/ownership.interface';
 import { PrismaService } from '../../../shared/database/prisma.service';
 
 @Injectable()
@@ -115,7 +114,6 @@ export class OwnershipEventListener implements OnModuleInit, OnModuleDestroy {
     this.logger.log(`Initiating historical sync backfill for Carbon Asset ownership from ledger 0...`);
     
     let currentLedger = 0;
-    const batchSize = 1000;
     let keepSyncing = true;
 
     while (keepSyncing) {

@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../shared/database/prisma.service';
-import { IOwnershipHistoryRecord, IOwnershipVerification, ICompanyPortfolio } from './interfaces/ownership.interface';
+import { IOwnershipHistoryRecord, IOwnershipVerification } from './interfaces/ownership.interface';
 
 @Injectable()
 export class HistoryQueryService {
