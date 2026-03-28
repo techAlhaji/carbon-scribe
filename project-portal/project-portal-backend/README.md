@@ -278,3 +278,67 @@ METHODOLOGY_MOCK_START_TOKEN=1000
 
 The deployed contract only allows whitelisted authority accounts to mint methodologies, so live testnet registration requires a funded authority secret key already approved by the contract admin.
 
+## Collaboration API Authentication Update
+
+Collaboration write operations now enforce JWT authentication and derive actor identity from token context. This removes impersonation risk from client-provided identity fields and ensures audit/activity attribution is server-controlled.
+
+### Protected Write Endpoints
+
+All collaboration routes run behind auth middleware, and the following write operations require a valid `Authorization: Bearer <token>` header:
+
+- `POST /api/v1/collaboration/comments`
+- `POST /api/v1/collaboration/tasks`
+- `POST /api/v1/collaboration/resources`
+- `POST /api/v1/collaboration/projects/:id/invite`
+- `PATCH /api/v1/collaboration/tasks/:id`
+- `DELETE /api/v1/collaboration/projects/:id/members/:userId`
+
+Anonymous requests to protected write endpoints return `401 Unauthorized`.
+
+### Request Body Contract Changes
+
+Client-provided identity fields are no longer accepted for collaboration creates:
+
+- Comments: removed `user_id`
+- Tasks: removed `created_by`
+- Resources: removed `uploaded_by`
+- Project invite: `invited_by` is derived from JWT context (not request body)
+
+Updated examples:
+
+```json
+{
+	"project_id": "project-123",
+	"content": "Please review the updated monitoring plan"
+}
+```
+
+```json
+{
+	"project_id": "project-123",
+	"title": "Collect baseline satellite data",
+	"description": "Run the ingestion workflow for Q2",
+	"priority": "high"
+}
+```
+
+```json
+{
+	"project_id": "project-123",
+	"type": "document",
+	"name": "Monitoring Framework v2",
+	"url": "https://example.com/framework-v2.pdf"
+}
+```
+
+```json
+{
+	"email": "new.collaborator@example.com",
+	"role": "Contributor"
+}
+```
+
+### Attribution and Auditing
+
+Activity logs for collaboration writes now use the authenticated `user_id` from JWT claims. Any identity value supplied by clients is ignored.
+

@@ -238,7 +238,7 @@ func main() {
 		settingsHandler.RegisterRoutes(v1)
 
 		// Register collaboration routes under v1
-		collaboration.RegisterRoutes(v1, collaborationHandler)
+		collaboration.RegisterRoutes(v1, collaborationHandler, tokenManager)
 
 		// Register financing routes under v1
 		financingHandler.RegisterRoutes(v1)
