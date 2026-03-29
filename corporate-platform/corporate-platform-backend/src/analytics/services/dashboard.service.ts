@@ -69,7 +69,7 @@ export class DashboardService {
 
     const [anomalies, trends, recommendations, riskAlerts] = await Promise.all([
       this.detectAnomalies(companyId),
-      this.analyzeTrends(companyId),
+      this.analyzeTrends(),
       this.generateRecommendations(),
       this.identifyRisks(),
     ]);
@@ -235,7 +235,7 @@ export class DashboardService {
     }));
   }
 
-  private async analyzeTrends(companyId: string) {
+  private async analyzeTrends() {
     return [
       {
         metric: 'retirement_volume',
