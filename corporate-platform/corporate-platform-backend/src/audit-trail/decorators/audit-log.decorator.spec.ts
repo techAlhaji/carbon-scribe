@@ -20,7 +20,7 @@ describe('AuditLog decorator', () => {
       })
       async createItem(
         payload: { id: string; amount: number },
-        user: { companyId: string; sub: string },
+        _user: { companyId: string; sub: string },
       ) {
         return {
           id: payload.id,
