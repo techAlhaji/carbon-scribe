@@ -33,6 +33,7 @@ import { CorsiaModule } from './corsia/corsia.module';
 import { AuditTrailModule } from './audit-trail/audit-trail.module';
 import { GhgProtocolModule } from './ghg-protocol/ghg-protocol.module';
 import { TeamCollaborationModule } from './team-collaboration/team-collaboration.module';
+import { CbamModule } from './cbam/cbam.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { TeamCollaborationModule } from './team-collaboration/team-collaboration
     AuditTrailModule,
     GhgProtocolModule,
     TeamCollaborationModule,
+    CbamModule,
   ],
   controllers: [AppController],
   providers: [AppService],

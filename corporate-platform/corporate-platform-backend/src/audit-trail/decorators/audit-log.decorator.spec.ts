@@ -20,7 +20,8 @@ describe('AuditLog decorator', () => {
       })
       async createItem(
         payload: { id: string; amount: number },
-        _user: { companyId: string; sub: string },
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _user?: { companyId: string; sub: string },
       ) {
         return {
           id: payload.id,
