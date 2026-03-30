@@ -376,3 +376,35 @@ Decorator usage summary:
 - Use `@AuditLog({...})` on service methods.
 - Provide `entityType` and `entityId` mapping from args/result.
 - Expose `auditTrailService` on the class and ensure user context (`companyId`, `sub`/`userId`) is accessible via class state or method args.
+
+## GHG Protocol Service Module
+
+The backend now includes a dedicated GHG Protocol module at `src/ghg-protocol/` for Scope 1, 2, and 3 accounting backed by Prisma models, seeded emission factors, and audit-trail events.
+
+Core endpoints:
+
+- `POST /api/v1/ghg/emissions/record`
+- `GET /api/v1/ghg/emissions/sources`
+- `POST /api/v1/ghg/emissions/sources`
+- `GET /api/v1/ghg/emissions/inventory`
+- `GET /api/v1/ghg/emissions/inventory/year/:year`
+- `GET /api/v1/ghg/emissions/trends`
+- `GET /api/v1/ghg/factors`
+- `POST /api/v1/ghg/calculate`
+
+Implementation notes:
+
+- Scope 1 uses direct activity × factor calculation for owned or controlled sources.
+- Scope 2 supports both `LOCATION_BASED` and `MARKET_BASED` methodologies.
+- Scope 3 supports category-based calculations for value-chain sources such as travel and purchased goods.
+- Emission factors are seeded from EPA/DEFRA examples in `prisma/seed.ts` and cached in the service layer for repeated lookups.
+- Annual inventory responses include verified vs unverified totals and framework-requirement coverage based on the `GHG` framework record.
+- Every source creation, dry-run calculation, and persisted emission record creates an immutable audit event through `AuditTrailService`.
+
+Database setup after pulling the change:
+
+```bash
+npx prisma generate
+npx prisma migrate deploy
+npx prisma db seed
+```

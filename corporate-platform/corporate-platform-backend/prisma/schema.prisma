@@ -37,6 +37,8 @@ model Company {
   ipfsDocuments           IpfsDocument[]
   transactionConfirmations TransactionConfirmation[]
   auditEvents             AuditEvent[]
+  emissionSources         EmissionSource[]
+  emissionRecords         EmissionRecord[]
   
   materialityAssessments MaterialityAssessment[]
   esrsDisclosures        EsrsDisclosure[]
@@ -307,6 +309,79 @@ model RetirementCertificate {
   transactionHash   String?
   
   createdAt         DateTime  @default(now())
+}
+
+// ==========================================
+// GHG Protocol Accounting
+// ==========================================
+
+model EmissionSource {
+  id           String           @id @default(cuid())
+  companyId    String
+  company      Company          @relation(fields: [companyId], references: [id])
+  scope        Int
+  category     String
+  name         String
+  activityType String
+  unit         String
+  methodology  String?
+  isActive     Boolean          @default(true)
+  metadata     Json?
+  records      EmissionRecord[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([companyId, scope])
+  @@index([activityType])
+  @@map("emission_sources")
+}
+
+model EmissionRecord {
+  id             String         @id @default(cuid())
+  companyId      String
+  company        Company        @relation(fields: [companyId], references: [id])
+  sourceId       String         @map("source_id")
+  source         EmissionSource @relation(fields: [sourceId], references: [id])
+  periodStart    DateTime       @map("period_start")
+  periodEnd      DateTime       @map("period_end")
+  activityValue  Float          @map("activity_value")
+  unit           String
+  emissionFactor Float          @map("emission_factor")
+  factorSource   String?        @map("factor_source")
+  factorRegion   String?        @map("factor_region")
+  co2e           Float
+  verified       Boolean        @default(false)
+  metadata       Json?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([companyId])
+  @@index([sourceId])
+  @@index([companyId, periodStart])
+  @@index([companyId, verified])
+  @@map("emission_records")
+}
+
+model EmissionFactor {
+  id           String    @id @default(cuid())
+  source       String
+  activityType String    @map("activity_type")
+  unit         String
+  co2ePerUnit  Float     @map("co2e_per_unit")
+  validFrom    DateTime  @map("valid_from")
+  validTo      DateTime? @map("valid_to")
+  region       String
+  methodology  String?
+  isActive     Boolean   @default(true)
+  metadata     Json?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@unique([source, activityType, unit, region, validFrom])
+  @@index([activityType, region])
+  @@index([validFrom, validTo])
+  @@map("emission_factors")
 }
 
 model User {

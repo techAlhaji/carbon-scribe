@@ -31,6 +31,7 @@ import { TeamManagementModule } from './team-management/team-management.module';
 import { OwnershipHistoryModule } from './audit/ownership-history/ownership-history.module';
 import { CorsiaModule } from './corsia/corsia.module';
 import { AuditTrailModule } from './audit-trail/audit-trail.module';
+import { GhgProtocolModule } from './ghg-protocol/ghg-protocol.module';
 import { TeamCollaborationModule } from './team-collaboration/team-collaboration.module';
 import { CbamModule } from './cbam/cbam.module';
 
@@ -64,6 +65,7 @@ import { CbamModule } from './cbam/cbam.module';
     OwnershipHistoryModule,
     CorsiaModule,
     AuditTrailModule,
+    GhgProtocolModule,
     TeamCollaborationModule,
     CbamModule,
   ],
