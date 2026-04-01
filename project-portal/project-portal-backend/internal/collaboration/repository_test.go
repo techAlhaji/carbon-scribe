@@ -17,7 +17,7 @@ func setupTestDB(t *testing.T) *gorm.DB {
 	t.Helper()
 
 	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
-		Logger: logger.Silent,
+		Logger: logger.Default.LogMode(logger.Silent),
 	})
 	require.NoError(t, err)
 
@@ -43,11 +43,11 @@ func TestRepository_AddMember_Success(t *testing.T) {
 	ctx := context.Background()
 
 	member := &ProjectMember{
-		ProjectID: "project-123",
-		UserID:    "user-456",
-		Role:      RoleContributor,
+		ProjectID:   "project-123",
+		UserID:      "user-456",
+		Role:        RoleContributor,
 		Permissions: []string{"read", "write"},
-		JoinedAt:  time.Now(),
+		JoinedAt:    time.Now(),
 	}
 
 	// Act
@@ -396,7 +396,7 @@ func TestRepository_ListActivities_Success_WithPagination(t *testing.T) {
 	// Verify ordering (should be descending by created_at)
 	allActivities := append(found1, append(found2, found3...)...)
 	for i := 1; i < len(allActivities); i++ {
-		assert.True(t, allActivities[i-1].CreatedAt.After(allActivities[i].CreatedAt) || 
+		assert.True(t, allActivities[i-1].CreatedAt.After(allActivities[i].CreatedAt) ||
 			allActivities[i-1].CreatedAt.Equal(allActivities[i].CreatedAt))
 	}
 }
@@ -459,7 +459,7 @@ func TestRepository_ListComments_Success(t *testing.T) {
 
 	// Verify ordering (should be ascending by created_at)
 	for i := 1; i < len(found); i++ {
-		assert.True(t, found[i-1].CreatedAt.Before(found[i].CreatedAt) || 
+		assert.True(t, found[i-1].CreatedAt.Before(found[i].CreatedAt) ||
 			found[i-1].CreatedAt.Equal(found[i].CreatedAt))
 	}
 }

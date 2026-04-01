@@ -268,10 +268,10 @@ func TestInvitationLifecycle_ResendPendingInvitation(t *testing.T) {
 func TestInvitationLifecycle_InvalidStateTransitions(t *testing.T) {
 	// Test that certain state transitions are invalid
 	tests := []struct {
-		name           string
-		initialStatus  string
-		targetStatus   string
-		shouldSucceed  bool
+		name          string
+		initialStatus string
+		targetStatus  string
+		shouldSucceed bool
 	}{
 		{
 			name:          "pending to accepted - valid",
@@ -321,7 +321,7 @@ func TestInvitationLifecycle_InvalidStateTransitions(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Arrange
 			mockRepo := new(MockRepository)
-			service := NewService(mockRepo)
+			_ = NewService(mockRepo) // Use service to avoid unused variable
 			ctx := context.Background()
 
 			invitation := &ProjectInvitation{
@@ -343,6 +343,10 @@ func TestInvitationLifecycle_InvalidStateTransitions(t *testing.T) {
 			// Act
 			allowedTargets, exists := validTransitions[tt.initialStatus]
 			isValid := exists && contains(allowedTargets, tt.targetStatus)
+
+			// Use ctx to avoid unused variable
+			_ = ctx
+			_ = invitation
 
 			// Assert
 			if tt.shouldSucceed {
@@ -393,9 +397,9 @@ func TestInvitationLifecycle_TokenUniqueness(t *testing.T) {
 func TestInvitationLifecycle_ExpirationTiming(t *testing.T) {
 	// Test various expiration scenarios
 	tests := []struct {
-		name           string
-		hoursToExpire  int
-		shouldBeValid  bool
+		name          string
+		hoursToExpire int
+		shouldBeValid bool
 	}{
 		{
 			name:          "fresh invitation - valid",
@@ -446,7 +450,7 @@ func TestInvitationLifecycle_ExpirationTiming(t *testing.T) {
 
 			// Assert expiration status
 			isExpired := time.Now().After(invitation.ExpiresAt)
-			assert.Equal(t, !tt.shouldBeValid, isExpired, 
+			assert.Equal(t, !tt.shouldBeValid, isExpired,
 				"Invitation with %d hours to expire should be valid: %v", tt.hoursToExpire, tt.shouldBeValid)
 		})
 	}
