@@ -1274,6 +1274,40 @@ model CreditTransfer {
   @@index([status])
 }
 
+model ContractCall {
+  id              String   @id @default(cuid())
+  companyId       String
+  contractId      String
+  methodName      String
+  transactionHash String   @unique
+  args            Json
+  status          String   // PENDING, CONFIRMED, FAILED
+  result          Json?
+  submittedAt     DateTime @default(now())
+  confirmedAt     DateTime?
+
+  @@index([companyId])
+  @@index([contractId])
+  @@index([status])
+  @@index([submittedAt])
+  @@map("contract_calls")
+}
+
+model RetirementVerification {
+  id              String   @id @default(cuid())
+  retirementId    String
+  tokenIds        Int[]
+  amount          Int
+  transactionHash String   @unique
+  blockNumber     Int
+  verifiedAt      DateTime @default(now())
+  proof           Json?    // Merkle proof for anchoring
+
+  @@index([retirementId])
+  @@index([verifiedAt])
+  @@map("retirement_verifications")
+}
+
 // ==========================================
 // Team Collaboration & Analytics
 // ==========================================

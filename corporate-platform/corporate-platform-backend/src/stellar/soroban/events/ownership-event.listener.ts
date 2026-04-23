@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '../../../config/config.service';
 import { OwnershipHistoryService } from '../../../audit/ownership-history/ownership-history.service';
 import { EventProcessorService } from '../../../audit/ownership-history/event-processor.service';
-import { SorobanService } from '../../soroban.service';
+import { SorobanService } from '../soroban.service';
 import { PrismaService } from '../../../shared/database/prisma.service';
 
 @Injectable()
@@ -45,7 +45,10 @@ export class OwnershipEventListener implements OnModuleInit, OnModuleDestroy {
           process.env.OWNERSHIP_START_LEDGER || '0',
           10,
         );
-        if (Number.isFinite(configuredStartLedger) && configuredStartLedger > 1) {
+        if (
+          Number.isFinite(configuredStartLedger) &&
+          configuredStartLedger > 1
+        ) {
           this.lastLedger = configuredStartLedger;
         } else {
           const latestSeq = await this.sorobanService.getLatestLedgerSequence();
